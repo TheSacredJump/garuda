@@ -65,7 +65,10 @@ export default function HurricaneReportPage() {
         movementDirection: Math.floor(Math.random() * 360),
         expectedLandfall: Math.floor(Math.random() * 24),
         hurricaneSize: Math.floor(Math.random() * 100) + 100,
-        movementSpeed: Math.floor(Math.random() * 100) + 100
+        movementSpeed: Math.floor(Math.random() * 100) + 100,
+        hurricaneFootprint: Math.floor(Math.random() * 100) + 100,
+        energySpent: Math.floor(Math.random() * 100) + 3000,
+        ecoResourceRatio: (0.1 + (Math.random() * 0.3)).toFixed(2),
       });
       setLoading(false);
     };
@@ -146,16 +149,14 @@ export default function HurricaneReportPage() {
                     <p className="text-sm text-neutral-300">Central pressure: {data.pressure} mbar</p>
                 </div>
                 <div className="p-5 bg-neutral-800/25 w-full mt-8 z-20 rounded-lg backdrop-blur-lg border border-white/10 shadow-xl">
-                    <h3 className="text-lg font-semibold text-white mb-2">Size</h3>
-                    <p className="text-3xl font-bold text-white mb-2">{data.hurricaneSize} miles</p>
-                    <p className="text-sm text-neutral-300">Diameter of hurricane-force winds</p>
-                    <p className="text-sm text-neutral-300">Affected area: {data.affectedArea} sq mi</p>
+                    <h3 className="text-lg font-semibold text-white mb-2">Carbon Footprint</h3>
+                    <p className="text-3xl font-bold text-white mb-2">{data.hurricaneFootprint} tons CO2e</p>
+                    <p className="text-sm text-neutral-300">Rebuilding efforts required tons of unecessary CO2 emissions</p>
                 </div>
                 <div className="p-5 bg-neutral-800/25 w-full mt-8 z-20 rounded-lg backdrop-blur-lg border border-white/10 shadow-xl">
-                    <h3 className="text-lg font-semibold text-white mb-2">Movement</h3>
-                    <p className="text-3xl font-bold text-white mb-2">{data.movementSpeed} mph</p>
-                    <p className="text-sm text-neutral-300">Direction: {data.movementDirection}</p>
-                    <p className="text-sm text-neutral-300">Expected landfall: {data.expectedLandfall}</p>
+                    <h3 className="text-lg font-semibold text-white mb-2">Energy Spent</h3>
+                    <p className="text-3xl font-bold text-white mb-2">{data.energySpent} MWh</p>
+                    <p className="text-sm text-neutral-300">Eco-friendly Resource Ratio: {data.ecoResourceRatio}</p>
                 </div>
                 <div className="p-5 bg-neutral-800/25 w-full mt-8 z-20 rounded-lg backdrop-blur-lg border border-white/10 shadow-xl">
                     <h3 className="text-lg font-semibold text-orange-400 mb-2">Potential Impact</h3>

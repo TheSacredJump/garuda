@@ -77,7 +77,7 @@ const Hero = () => {
           >
             AI-Powered Disaster Response and <br /> Real-Time{' '}
             <span className='text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-500'>
-              Damage Analysis
+              Sustainability Analysis
             </span>
           </motion.h1>
           <motion.p 

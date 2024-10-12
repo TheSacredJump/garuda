@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import { FileUpload } from "@/components/ui/file-upload";
 import dynamic from 'next/dynamic';
-import Spline from "@splinetool/react-spline";
 
 export default function FileUploadDemo() {
   const [files, setFiles] = useState<File[]>([]);

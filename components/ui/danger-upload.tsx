@@ -75,7 +75,7 @@ export const FileUpload = ({
             Upload <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-500">Drone Footage</span>
           </p>
           <p className="relative z-20 font-sans font-normal text-neutral-400 text-sm mt-2 text-center">
-            Gardua analyzes drone footage in real-time to provide <br /> disaster insights, updates, and critical alerts
+            Gardua analyzes drone footage in real-time to detect <br /> people in danger and report to authorities
           </p>
           <div className="relative w-full mt-10 max-w-xl mx-auto">
             {files.length > 0 &&
