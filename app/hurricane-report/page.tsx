@@ -64,7 +64,8 @@ export default function HurricaneReportPage() {
         aiDamageReport: generateAIDamageReport(name, category, damage),
         movementDirection: Math.floor(Math.random() * 360),
         expectedLandfall: Math.floor(Math.random() * 24),
-        hurricaneSize: Math.floor(Math.random() * 100) + 100
+        hurricaneSize: Math.floor(Math.random() * 100) + 100,
+        movementSpeed: Math.floor(Math.random() * 100) + 100
       });
       setLoading(false);
     };
