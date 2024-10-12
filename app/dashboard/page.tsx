@@ -8,6 +8,7 @@ import {
   IconExclamationCircle,
   IconNews,
   IconDrone,
+  IconMap,
 } from "@tabler/icons-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -18,9 +19,10 @@ import { UserButton, useUser } from "@clerk/nextjs";
 // New imports for content components
 import Dashboard from "@/components/Dashboard";
 // import ProfileContent from "@/components/ProfileContent";
-// import SettingsContent from "@/components/SettingsContent";
+import Settings from "@/components/Settings";
 import News from "@/components/News";
 import Danger from "@/components/Danger";
+import HeatmapComponent from "@/components/Heatmap";
 
 export default function SidebarDemo() {
   const { user } = useUser();
@@ -40,6 +42,13 @@ export default function SidebarDemo() {
       href: "#",
       icon: (
         <IconExclamationCircle className="text-neutral-200 h-5 w-5 flex-shrink-0" />
+      ),
+    },
+    {
+      label: "Heatmap",
+      href: "#",
+      icon: (
+        <IconMap className="text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
     },
     {
@@ -137,9 +146,8 @@ const Content = ({ activeTab }) => {
         <div className="p-2 md:p-10 rounded-tl-2xl border border-neutral-700 bg-neutral-900 flex flex-col gap-2 flex-1 w-full h-full">
           {activeTab === "Dashboard" && <Dashboard />}
           {activeTab === "Danger Detection" && <Danger />}
-          {activeTab === "Profile" && <ProfileContent />}
-          {activeTab === "Settings" && <SettingsContent />}
-          {activeTab === "Logout" && <LogoutContent />}
+          {activeTab === "Heatmap" && <HeatmapComponent />}
+          {activeTab === "Settings" && <Settings />}
           {activeTab === "News" && <News />}
         </div>
       </div>
