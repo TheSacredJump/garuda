@@ -30,7 +30,7 @@ const HurricaneHotzoneComponent = () => {
 
   return (
     <LoadScript
-      googleMapsApiKey="AIzaSyAZf90eGMLiyI-bskPYrYpSjb9eE9bvnpE"
+      googleMapsApiKey={`${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`}
     >
       <GoogleMap
         mapContainerStyle={mapContainerStyle}
