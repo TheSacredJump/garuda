@@ -19,6 +19,8 @@ const HurricaneHotzoneComponent = () => {
   const [directions, setDirections] = useState(null);
   const [evacuationRoute, setEvacuationRoute] = useState(null);
   const [carbonEmissions, setCarbonEmissions] = useState(null);
+  const [hoveredHotzone, setHoveredHotzone] = useState(null);
+  const [isCtrlPressed, setIsCtrlPressed] = useState(false);
 
   useEffect(() => {
     const fetchHotzoneData = async () => {
@@ -32,6 +34,26 @@ const HurricaneHotzoneComponent = () => {
     };
 
     fetchHotzoneData();
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Control') {
+        setIsCtrlPressed(true);
+      }
+    };
+
+    const handleKeyUp = (event) => {
+      if (event.key === 'Control') {
+        setIsCtrlPressed(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+    };
   }, []);
 
   const onMapLoad = (map) => {
@@ -90,46 +112,73 @@ const HurricaneHotzoneComponent = () => {
     const directionsService = new window.google.maps.DirectionsService();
     const origin = hotzone.location;
     
-    // Calculate multiple points outside the hotzone
-    const numRoutes = 5;
+    const numRoutes = 36; // Increased for better coverage
+    let routesCalculated = 0;
     const routes = [];
 
     for (let i = 0; i < numRoutes; i++) {
       const angle = (i / numRoutes) * 2 * Math.PI;
-      const safeDistance = (hotzone.radius + 5) * 1000; // 5km beyond the hotzone radius
+      const safeDistance = (hotzone.radius + 20) * 1000; // 20km beyond the hotzone radius
       const destination = {
         lat: origin.lat + (safeDistance / 111111) * Math.cos(angle),
         lng: origin.lng + (safeDistance / (111111 * Math.cos(origin.lat * Math.PI / 180))) * Math.sin(angle)
       };
 
-      directionsService.route(
-        {
-          origin: origin,
-          destination: destination,
-          travelMode: window.google.maps.TravelMode.DRIVING,
-        },
-        (result, status) => {
-          if (status === window.google.maps.DirectionsStatus.OK) {
-            const emissions = calculateCarbonEmissions(result);
-            routes.push({ route: result, emissions: emissions });
-
-            if (routes.length === numRoutes) {
-              // All routes calculated, choose the one with lowest emissions
-              const bestRoute = routes.reduce((min, route) => route.emissions < min.emissions ? route : min);
-              setEvacuationRoute(bestRoute.route);
-              setCarbonEmissions(bestRoute.emissions);
-              setDirections(null); // Clear regular directions when showing evacuation route
+      if (!isPointInAnyHotzone(destination)) {
+        directionsService.route(
+          {
+            origin: origin,
+            destination: destination,
+            travelMode: window.google.maps.TravelMode.DRIVING,
+          },
+          (result, status) => {
+            routesCalculated++;
+            if (status === window.google.maps.DirectionsStatus.OK) {
+              const emissions = calculateCarbonEmissions(result);
+              routes.push({ route: result, emissions: emissions });
             }
-          } else {
-            console.error(`error fetching evacuation route ${result}`);
+
+            if (routesCalculated === numRoutes) {
+              if (routes.length > 0) {
+                const bestRoute = routes.reduce((min, route) => route.emissions < min.emissions ? route : min);
+                setEvacuationRoute(bestRoute.route);
+                setCarbonEmissions(bestRoute.emissions);
+                setDirections(null);
+              } else {
+                alert("No safe evacuation routes found. Please try a different hotzone.");
+              }
+            }
           }
-        }
-      );
+        );
+      } else {
+        routesCalculated++;
+      }
     }
   };
 
+  const isPointInAnyHotzone = (point) => {
+    return hotzoneData.some(hotzone => {
+      const distance = getDistance(point, hotzone.location);
+      return distance <= hotzone.radius * 1000;
+    });
+  };
+
+  const getDistance = (p1, p2) => {
+    const R = 6371e3; // Earth's radius in meters
+    const φ1 = p1.lat * Math.PI / 180;
+    const φ2 = p2.lat * Math.PI / 180;
+    const Δφ = (p2.lat - p1.lat) * Math.PI / 180;
+    const Δλ = (p2.lng - p1.lng) * Math.PI / 180;
+
+    const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+              Math.cos(φ1) * Math.cos(φ2) *
+              Math.sin(Δλ/2) * Math.sin(Δλ/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+    return R * c;
+  };
+
   const calculateCarbonEmissions = (route) => {
-    // This is a simplified calculation. In a real-world scenario, you'd want to use more accurate data and calculations.
     const distance = route.routes[0].legs[0].distance.value / 1000; // distance in km
     const emissionFactor = 0.12; // kg CO2 per km (average car emission)
     return distance * emissionFactor;
@@ -162,6 +211,8 @@ const HurricaneHotzoneComponent = () => {
               strokeWeight: 2,
             }}
             onClick={handleHotzoneClick(hotzone)}
+            onMouseOver={() => isCtrlPressed && setHoveredHotzone(hotzone)}
+            onMouseOut={() => setHoveredHotzone(null)}
           />
         ))}
         {userLocation && (
@@ -202,6 +253,16 @@ const HurricaneHotzoneComponent = () => {
               </div>
             </InfoWindow>
           </>
+        )}
+        {hoveredHotzone && isCtrlPressed && (
+          <InfoWindow
+            position={hoveredHotzone.location}
+            onCloseClick={() => setHoveredHotzone(null)}
+          >
+            <div className='text-white bg-gradient-to-r from-red-500 to-orange-500 rounded-lg p-4'>
+              <p><strong>Reports:</strong> {hoveredHotzone.count}</p>
+            </div>
+          </InfoWindow>
         )}
       </GoogleMap>
     </LoadScript>
