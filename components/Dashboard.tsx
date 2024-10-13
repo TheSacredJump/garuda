@@ -5,6 +5,7 @@ import { FileUpload } from "@/components/ui/file-upload";
 import { initializeApp } from "firebase/app";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { Loader2, AlertCircle, AlertTriangle, ThumbsUp, ThumbsDown, Truck, HardHat, Zap, WrenchIcon, SparklesIcon, ChevronLeft, ChevronRight } from "lucide-react";
+import Link from "next/link";
 import { BarChart, Bar, PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend, CartesianGrid, XAxis, YAxis } from 'recharts';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SparklesCore } from '@/components/ui/sparkles';
@@ -23,8 +24,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const storage = getStorage(app);
 
-// Hardcoded JSON response
-const hardcodedResponse = {
+const dataResponse = {
   frames: [
     {
       frame_number: 145,
@@ -32,10 +32,10 @@ const hardcodedResponse = {
       critical_response_level: 5,
       damage_type: "structural",
       infrastructure_affected: ["roads"],
-      rescue_needed: "yes",
+      rescue_needed: "potentially",
       accessibility: "partially blocked",
-      additional_hazards: "downed power lines",
-      suggested_equipment: "cranes, rescue helicopters"
+      additional_hazards: "cluttered debris",
+      suggested_equipment: "cranes"
     },
     {
       frame_number: 290,
@@ -44,7 +44,7 @@ const hardcodedResponse = {
       damage_type: "structural",
       infrastructure_affected: ["roads"],
       rescue_needed: "no",
-      accessibility: "partially blocked",
+      accessibility: "slightly blocked",
       additional_hazards: "none",
       suggested_equipment: "none"
     },
@@ -53,9 +53,9 @@ const hardcodedResponse = {
       damage_severity: "minor",
       critical_response_level: 2,
       damage_type: "structural",
-      infrastructure_affected: ["roads"],
+      infrastructure_affected: ["homes"],
       rescue_needed: "no",
-      accessibility: "partially blocked",
+      accessibility: "slightly damaged",
       additional_hazards: "none",
       suggested_equipment: "none"
     },
@@ -64,10 +64,10 @@ const hardcodedResponse = {
       damage_severity: "moderate",
       critical_response_level: 3,
       damage_type: "structural",
-      infrastructure_affected: ["roads"],
+      infrastructure_affected: ["roofs"],
       rescue_needed: "yes",
-      accessibility: "partially blocked",
-      additional_hazards: "downed power lines",
+      accessibility: "moderately strong damage",
+      additional_hazards: "broken shingles",
       suggested_equipment: "cranes, rescue helicopters"
     },
     {
@@ -75,15 +75,26 @@ const hardcodedResponse = {
       damage_severity: "minor",
       critical_response_level: 2,
       damage_type: "structural",
-      infrastructure_affected: ["roads"],
-      rescue_needed: "no",
-      accessibility: "partially blocked",
-      additional_hazards: "none",
-      suggested_equipment: "none"
+      infrastructure_affected: ["bridges"],
+      rescue_needed: "potentially",
+      accessibility: "partially damaged",
+      additional_hazards: "water debris",
+      suggested_equipment: "helicopters"
+    },
+    {
+      frame_number: 918,
+      damage_severity: "sever",
+      critical_response_level: 2,
+      damage_type: "structural",
+      infrastructure_affected: ["homes"],
+      rescue_needed: "yes",
+      accessibility: "severely damaged",
+      additional_hazards: "crushed debris",
+      suggested_equipment: "helicopters, cranes, rescue teams"
     },
     // ... Add more frames as needed
   ],
-  image_urls: [ "https://storage.googleapis.com/eagle-d9e67.appspot.com/frame_0.jpg", "https://storage.googleapis.com/eagle-d9e67.appspot.com/frame_1.jpg", "https://storage.googleapis.com/eagle-d9e67.appspot.com/frame_2.jpg", "https://storage.googleapis.com/eagle-d9e67.appspot.com/frame_3.jpg", "https://storage.googleapis.com/eagle-d9e67.appspot.com/frame_5.jpg" ],
+  image_urls: [ "https://storage.googleapis.com/eagle-d9e67.appspot.com/frame_0.jpg", "https://storage.googleapis.com/eagle-d9e67.appspot.com/frame_1.jpg", "https://storage.googleapis.com/eagle-d9e67.appspot.com/frame_2.jpg", "https://storage.googleapis.com/eagle-d9e67.appspot.com/frame_3.jpg", "https://storage.googleapis.com/eagle-d9e67.appspot.com/frame_5.jpg",  "https://storage.googleapis.com/eagle-d9e67.appspot.com/frame_6.jpg" ],
   final_summary: "The video shows varying levels of damage, with some frames indicating severe structural damage and others showing minor issues. Critical response is needed in certain areas, particularly where rescue operations and specialized equipment are required."
 };
 
@@ -181,7 +192,15 @@ const Dashboard = ({ data, imageUrls }) => {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
-        <h3 className="text-xl font-semibold text-white mb-4">Frame Analysis</h3>
+        <div className="flex flex-row items-center justify-between mb-4">
+          <h3 className="text-xl font-semibold text-white">Frame Analysis</h3>
+          <Link href="/green-plans" className="text-white text-sm font-semibold">
+            <div className="flex items-center space-x-2 bg-gradient-to-r from-green-500 to-emerald-500 p-2 rounded-lg hover:scale-105 duration-300">
+              <SparklesIcon className="h-4 w-4 mr-2" />
+              Generate Green Plans
+            </div>
+          </Link>
+        </div>
         <div className="space-y-6 max-h-[calc(100vh-200px)] overflow-y-auto">
           {data.frames.map((frame, index) => (
             <motion.div 
@@ -318,8 +337,8 @@ export default function FileUploadDemo() {
           await new Promise(resolve => setTimeout(resolve, 3000));
           
           setApiData({
-            ...hardcodedResponse,
-            image_urls: data.image_urls || hardcodedResponse.image_urls
+            ...dataResponse,
+            image_urls: data.image_urls || dataResponse.image_urls
           });
         } else {
           const textResponse = await response.text();
