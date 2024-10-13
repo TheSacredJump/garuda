@@ -40,7 +40,7 @@ const Danger = () => {
         setUploadedVideoUrl(downloadURL);
 
         // Call API to process the video
-        const apiUrl = `https://75f9-67-134-204-43.ngrok-free.app/process-video?video_link=${encodeURIComponent(file.name)}`;
+        const apiUrl = `https://61db-192-54-222-129.ngrok-free.app/process-video?video_link=${encodeURIComponent(file.name)}`;
         const response = await fetch(apiUrl, {
           method: 'GET',
           mode: 'cors', // This is the default and can be omitted
