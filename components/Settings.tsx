@@ -79,11 +79,11 @@ const SettingsPage = () => {
           </div>
 
           <div className="border-t border-neutral-800 pt-6 mt-6 space-y-4">
-            <Button variant="outline" className="w-full flex items-center justify-center space-x-2 border-neutral-800 text-white hover:bg-neutral-800">
+            <Button variant="outline" className="w-full flex items-center justify-center space-x-2 border-neutral-800 bg-neutral-800 text-white ">
               <Lock className="h-4 w-4" />
               <span>Change Password</span>
             </Button>
-            <Button variant="outline" className="w-full flex items-center justify-center space-x-2 border-neutral-800 text-white hover:bg-neutral-800">
+            <Button variant="outline" className="w-full flex items-center justify-center space-x-2 bg-neutral-800 border-neutral-800 text-white ">
               <User className="h-4 w-4" />
               <span>Edit Profile</span>
             </Button>
